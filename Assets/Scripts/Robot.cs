@@ -27,19 +27,11 @@ public class Robot : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        isReady = true;
     }
 
     private void Start()
     {
-        gridMapReference = GridMap.Instance;
-        actions = new Queue<Action>();
-        
-        direction = new Vector2Int(0, 1);
-        transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * 180 / Mathf.PI);
-        
-        positionInGrid = startCell ? startCell.positionInGrid : Vector2Int.zero;
-        transform.position = gridMapReference.GetWorldPosition(positionInGrid);
+        StartCoroutine(InitializeCoroutine());
     }
 
     private void Update()
@@ -73,39 +65,16 @@ public class Robot : MonoBehaviour
         actions.Enqueue(() => _Rotate(true));
     }
 
+    public void StartGame()
+    {
+        isReady = true;
+    }
+
     private void _Rotate(bool isLeft)
     {
-        // var angle = Mathf.Atan2(direction.y, direction.x);
-        // angle += isLeft ? Mathf.PI / 2 : -Mathf.PI / 2;
-        // angle %= Mathf.PI * 2;
-        //
-        // if (Mathf.Abs(angle) < 0.000001f)
-        //     direction = new Vector2Int(1, 0);
-        // else if (Mathf.Abs(angle - Mathf.PI/2) < 0.000001f)
-        //     direction = new Vector2Int(0, 1);
-        // else if (Mathf.Abs(angle + Mathf.PI/2) < 0.000001f)
-        //     direction = new Vector2Int(0, -1);
-        // else
-        //     direction = new Vector2Int(-1, 0);
-
-        if (direction == up && isLeft)
-            direction = left;
-        else if (direction == up && !isLeft)
-            direction = right;
-        else if (direction == right && isLeft)
-            direction = up;
-        else if (direction == right && !isLeft)
-            direction = down;
-        else if (direction == down && isLeft)
-            direction = right;
-        else if (direction == down && !isLeft)
-            direction = left;
-        else if (direction == left && isLeft)
-            direction = down;
-        else 
-            direction = up;
-        
-
+        var angle = Mathf.Atan2(direction.y, direction.x);
+        angle += isLeft ? Mathf.PI / 2 : -Mathf.PI / 2;
+        direction = new Vector2Int((int)Mathf.Cos(angle), (int)Mathf.Sin(angle));
         StartCoroutine(RotateCoroutine(isLeft));
     }
 
@@ -140,5 +109,18 @@ public class Robot : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * 180 / Mathf.PI);
         
         isReady = true;
+    }
+
+    private IEnumerator InitializeCoroutine()
+    {
+        yield return null;
+        gridMapReference = GridMap.Instance;
+        actions = new Queue<Action>();
+        
+        direction = new Vector2Int(0, 1);
+        transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * 180 / Mathf.PI);
+        
+        positionInGrid = startCell != null ? startCell.positionInGrid : Vector2Int.zero;
+        transform.position = gridMapReference.GetWorldPosition(positionInGrid);
     }
 }
