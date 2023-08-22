@@ -14,7 +14,7 @@ public class CodeBlockGenerator : MonoBehaviour, IBeginDragHandler, IDragHandler
     [SerializeField] private string blockName;
     [SerializeField] private UnityEvent onExecuteAction;
     [SerializeField] private CodeBlock codeBlockPrefab;
-    
+
     private CanvasGroup canvasGroup;
     private RectTransform rectTransform;
     private Canvas mainCanvas;

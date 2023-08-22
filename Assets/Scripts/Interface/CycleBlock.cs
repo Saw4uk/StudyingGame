@@ -31,6 +31,6 @@ public class CycleBlock : IntCodeBlock, ICodeSpace
    public void AddBlock(CodeBlock block)
    {
       codeBlockDrawers.Add(block);
-      rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y + 60);
+      rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y + 40);
    }
 }

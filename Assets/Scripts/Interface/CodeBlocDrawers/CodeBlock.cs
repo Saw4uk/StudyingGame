@@ -25,4 +25,9 @@ public class CodeBlock : MonoBehaviour
     {
         action.Invoke();
     }
+
+    public void DestroyMe()
+    {
+       Destroy(gameObject); 
+    }
 }

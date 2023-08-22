@@ -21,12 +21,12 @@ public class CodeBlockReader : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        var codeBlock = eventData.pointerDrag.GetComponent<CodeBlockGenerator>();
-        if(codeBlock == null) return;
-        var codeBlockDrawer = Instantiate(codeBlock.CodeBlockPrefab, layoutGroup.transform);
-        codeBlockDrawer.transform.SetAsLastSibling();
-        codeSpace.AddBlock(codeBlockDrawer);
+        var generator = eventData.pointerDrag.GetComponent<CodeBlockGenerator>();
+        if(generator == null) return;
+        var codeBlock = Instantiate(generator.CodeBlockPrefab, layoutGroup.transform);
+        codeBlock.transform.SetAsLastSibling();
+        codeSpace.AddBlock(codeBlock);
         transform.SetAsLastSibling();
-        codeBlockDrawer.Init(codeBlock);
+        codeBlock.Init(generator);
     }
 }
