@@ -27,7 +27,6 @@ public class Robot : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        isReady = true;
     }
 
     private void Start()
@@ -71,6 +70,11 @@ public class Robot : MonoBehaviour
     public void RotateLeft()
     {
         actions.Enqueue(() => _Rotate(true));
+    }
+
+    public void StartGame()
+    {
+        isReady = true;
     }
 
     private void _Rotate(bool isLeft)
