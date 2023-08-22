@@ -42,7 +42,11 @@ public class GridMap : MonoBehaviour
     public bool CheckPosition(Vector2Int p) => ObstacleCheck(p);
     private bool BoundaryCheck(Vector2Int p) => p.x >= 0 && p.x < Width && p.y >= 0 && p.y < Height;
     private bool ObstacleCheck(Vector2Int p) => BoundaryCheck(p) && !map[p.x, p.y].IsLocked;
-    
+
+    public bool IsPositionWin(Vector2Int p)
+    {
+        return BoundaryCheck(p) && map[p.x, p.y].IsWin;
+    }
 
     public Vector2 GetWorldPosition(Vector2Int p)
     {

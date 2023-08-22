@@ -19,7 +19,7 @@ public class CodeBlockReader : MonoBehaviour, IDropHandler
         
     }
 
-    public void OnDrop(PointerEventData eventData)
+    public virtual void OnDrop(PointerEventData eventData)
     {
         var generator = eventData.pointerDrag.GetComponent<CodeBlockGenerator>();
         if(generator == null) return;
