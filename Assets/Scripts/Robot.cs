@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Robot : MonoBehaviour
 {
     public static Robot Instance { get; private set; }
+    [SerializeField] private RectTransform GameOverWindow;
     [SerializeField] private Cell startCell;
+    [SerializeField] private Vector2Int startDirection;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotationSpeed;
     private GridMap gridMapReference;
@@ -24,6 +27,10 @@ public class Robot : MonoBehaviour
 
     private bool isReady;
 
+    private bool gameActive;
+
+    public Vector2Int PositionInGrid => positionInGrid;
+
     private void Awake()
     {
         Instance = this;
@@ -38,6 +45,12 @@ public class Robot : MonoBehaviour
     {
         if (isReady && actions.Count > 0)
             actions.Dequeue().Invoke();
+
+        if (gameActive && isReady && actions.Count == 0)
+        {
+            OnGameEnd();
+            gameActive = false;
+        }
     }
 
     public void Move()
@@ -68,6 +81,7 @@ public class Robot : MonoBehaviour
     public void StartGame()
     {
         isReady = true;
+        gameActive = true;
     }
 
     private void _Rotate(bool isLeft)
@@ -117,10 +131,23 @@ public class Robot : MonoBehaviour
         gridMapReference = GridMap.Instance;
         actions = new Queue<Action>();
         
-        direction = new Vector2Int(0, 1);
+        RestoreDefaults();
+    }
+
+    public void RestoreDefaults()
+    {
+        direction = startDirection;
         transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * 180 / Mathf.PI);
         
         positionInGrid = startCell != null ? startCell.positionInGrid : Vector2Int.zero;
         transform.position = gridMapReference.GetWorldPosition(positionInGrid);
+        gameActive = false;
+    }
+
+    private void OnGameEnd()
+    {
+        var isWon = gridMapReference.IsPositionWin(PositionInGrid);
+        GameOverWindow.gameObject.SetActive(true);
+        GameOverWindow.GetComponent<GameOverWindowDrawer>().ReDraw(isWon,isWon ? 100 : 0);
     }
 }

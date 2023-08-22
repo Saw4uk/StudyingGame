@@ -6,18 +6,12 @@ using UnityEngine.UI;
 public class Cell : MonoBehaviour
 {
     public Vector2Int positionInGrid;
-    [SerializeField] private bool isLocked;
+    [SerializeField] private CellType cellType;
     [SerializeField, HideInInspector] private Image image;
 
-    public bool IsLocked
-    {
-        get => isLocked;
-        set
-        {
-            isLocked = value;
-            Redraw();
-        }
-    }
+    public bool IsLocked => cellType == CellType.Obstacle;
+    public bool IsWin => cellType == CellType.Finish;
+
 
     private void OnValidate()
     {
@@ -33,6 +27,24 @@ public class Cell : MonoBehaviour
     }
     private void Redraw()
     {
-        image.color = isLocked ? Color.black : Color.white;
+        switch (cellType)
+        {
+            case CellType.Normal:
+                image.color = Color.white;
+                break;
+            case CellType.Obstacle:
+                image.color = Color.black;
+                break;
+            case CellType.Finish:
+                image.color = Color.green;
+                break;
+        }
     }
+}
+
+public enum CellType
+{
+    Normal,
+    Obstacle,
+    Finish
 }
