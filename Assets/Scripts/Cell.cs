@@ -16,7 +16,6 @@ public class Cell : MonoBehaviour
     private void OnValidate()
     {
         AssignReference();
-        Redraw();
     }
 
 
@@ -24,21 +23,6 @@ public class Cell : MonoBehaviour
     {
         if (image == null)
             image = GetComponent<Image>();
-    }
-    private void Redraw()
-    {
-        switch (cellType)
-        {
-            case CellType.Normal:
-                image.color = Color.white;
-                break;
-            case CellType.Obstacle:
-                image.color = Color.black;
-                break;
-            case CellType.Finish:
-                image.color = Color.green;
-                break;
-        }
     }
 }
 
