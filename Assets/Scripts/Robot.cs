@@ -48,7 +48,7 @@ public class Robot : MonoBehaviour
 
         if (gameActive && isReady && actions.Count == 0)
         {
-            OnGameEnd();
+            StartCoroutine(OnGameEnd());
             gameActive = false;
         }
     }
@@ -99,7 +99,7 @@ public class Robot : MonoBehaviour
         Vector2 startPosition = transform.position;
         while (progress < 1f)
         {
-            transform.position = Vector3.Slerp(startPosition, worldPos, progress);
+            transform.position = Vector2.Lerp(startPosition, worldPos, progress);
             progress += Time.deltaTime * moveSpeed;
             yield return null;
         }
@@ -144,8 +144,9 @@ public class Robot : MonoBehaviour
         gameActive = false;
     }
 
-    private void OnGameEnd()
+    private IEnumerator OnGameEnd()
     {
+        yield return new WaitForSeconds(0.5f);
         var isWon = gridMapReference.IsPositionWin(PositionInGrid);
         GameOverWindow.gameObject.SetActive(true);
         GameOverWindow.GetComponent<GameOverWindowDrawer>().ReDraw(isWon,isWon ? 100 : 0);
