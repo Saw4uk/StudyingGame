@@ -23,7 +23,7 @@ public class GridMap : MonoBehaviour
     private void Start()
     {
         gridLayout = GetComponent<GridLayoutGroup>();
-        map = new Cell[10, 9];
+        map = new Cell[10, 11];
         var x = 0;
         var y = 0;
         foreach (var cell in gridLayout.transform.OfType<Transform>())
