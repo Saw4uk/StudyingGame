@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class CodeBlockReader : MonoBehaviour, IDropHandler
 {
     private LayoutGroup layoutGroup;
+    [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private Transform codeSpaceObject;
     private ICodeSpace codeSpace;
     private void Awake()
@@ -28,5 +29,6 @@ public class CodeBlockReader : MonoBehaviour, IDropHandler
         codeSpace.AddBlock(codeBlock);
         transform.SetAsLastSibling();
         codeBlock.Init(generator);
+        scrollRect.GetComponent<ScrollController>().onBlockAdd?.Invoke();
     }
 }

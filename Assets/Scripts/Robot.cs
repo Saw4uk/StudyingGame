@@ -1,39 +1,46 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class Robot : MonoBehaviour
 {
-    public static Robot Instance { get; private set; }
-    [SerializeField] private RectTransform GameOverWindow;
     [SerializeField] private Cell startCell;
+    [SerializeField] private Cell finishCell;
     [SerializeField] private Vector2Int startDirection;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private string pseudocodeRobotName;
+    [SerializeField] private string codeRobotName;
+    [SerializeField] private Color robotNameColor;
     private GridMap gridMapReference;
-    
-    [Header("DEBUG")]
-    [SerializeField, ReadOnlyInspector] private Vector2Int direction;
+
+    [Header("DEBUG")] [SerializeField, ReadOnlyInspector]
+    private Vector2Int direction;
+
     [SerializeField, ReadOnlyInspector] private Vector2Int positionInGrid;
-    
-    private Vector2Int up = Vector2Int.up;
-    private Vector2Int right = Vector2Int.right;
-    private Vector2Int down = Vector2Int.down;
-    private Vector2Int left = Vector2Int.left;
-    
+
     private Queue<Action> actions;
-
     private bool isReady;
-
-    private bool gameActive;
-
+    private string robotName;
+    private Sprite robotImage;
+    
     public Vector2Int PositionInGrid => positionInGrid;
+    public string RobotName => robotName;
+    public Sprite RobotImage => robotImage;
+    public Color RobotNameColor => robotNameColor;
+    public bool IsFinishedWalking => isReady && actions.Count == 0;
+
+    public bool OnRightFinishingCell =>
+        GridMap.Instance.IsPositionWin(positionInGrid) && finishCell.positionInGrid == positionInGrid;
 
     private void Awake()
     {
-        Instance = this;
+        CodeDisplayType.Instance.OnChangeCodeType += OnChangingCodeType;
+        robotImage = GetComponentsInChildren<Image>().First(child => child.gameObject.name == "Body").sprite;
     }
 
     private void Start()
@@ -45,26 +52,11 @@ public class Robot : MonoBehaviour
     {
         if (isReady && actions.Count > 0)
             actions.Dequeue().Invoke();
-
-        if (gameActive && isReady && actions.Count == 0)
-        {
-            StartCoroutine(OnGameEnd());
-            gameActive = false;
-        }
     }
 
     public void Move()
     {
         actions.Enqueue(_Move);
-    }
-
-    private void _Move()
-    {
-        if (gridMapReference.CheckPosition(positionInGrid + direction))
-        {
-            positionInGrid += direction;
-            StartCoroutine(MoveCoroutineTo(gridMapReference.GetWorldPosition(positionInGrid)));
-        }
     }
 
     public void RotateRight()
@@ -81,7 +73,15 @@ public class Robot : MonoBehaviour
     public void StartGame()
     {
         isReady = true;
-        gameActive = true;
+    }
+
+    private void _Move()
+    {
+        if (gridMapReference.CheckPosition(positionInGrid + direction))
+        {
+            positionInGrid += direction;
+            StartCoroutine(MoveCoroutineTo(gridMapReference.GetWorldPosition(positionInGrid)));
+        }
     }
 
     private void _Rotate(bool isLeft)
@@ -121,7 +121,7 @@ public class Robot : MonoBehaviour
         }
 
         transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * 180 / Mathf.PI);
-        
+
         isReady = true;
     }
 
@@ -130,7 +130,7 @@ public class Robot : MonoBehaviour
         yield return null;
         gridMapReference = GridMap.Instance;
         actions = new Queue<Action>();
-        
+
         RestoreDefaults();
     }
 
@@ -138,17 +138,21 @@ public class Robot : MonoBehaviour
     {
         direction = startDirection;
         transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * 180 / Mathf.PI);
-        
+
         positionInGrid = startCell != null ? startCell.positionInGrid : Vector2Int.zero;
         transform.position = gridMapReference.GetWorldPosition(positionInGrid);
-        gameActive = false;
     }
-
-    private IEnumerator OnGameEnd()
+    
+    private void OnChangingCodeType(CodeType codeType)
     {
-        yield return new WaitForSeconds(0.5f);
-        var isWon = gridMapReference.IsPositionWin(PositionInGrid);
-        GameOverWindow.gameObject.SetActive(true);
-        GameOverWindow.GetComponent<GameOverWindowDrawer>().ReDraw(isWon,isWon ? 100 : 0);
+        switch (codeType)
+        {
+            case CodeType.Code:
+                robotName = codeRobotName;
+                break;
+            case CodeType.Pseudocode:
+                robotName = pseudocodeRobotName;
+                break;
+        }
     }
 }

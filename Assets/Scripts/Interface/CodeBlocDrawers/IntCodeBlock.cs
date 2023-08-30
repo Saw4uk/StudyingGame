@@ -7,14 +7,14 @@ public class IntCodeBlock : CodeBlock
 {
     
     [SerializeField] private TMP_InputField inputField;
-    protected int Amount => Mathf.Abs(int.Parse(inputField.text));
+    protected int Amount => Mathf.Abs(int.Parse(inputField.text != "" ? inputField.text : "0"));
 
     public override void ExecuteEvent()
     {
         var amount = Amount;
         for (int i = 0; i < amount; i++)
         {
-            action.Invoke();
+            RobotManager.Instance.ExecuteEvent(robot, action);
         }
     }
 }
