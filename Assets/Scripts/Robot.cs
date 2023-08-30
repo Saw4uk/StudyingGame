@@ -25,6 +25,7 @@ public class Robot : MonoBehaviour
 
     private Queue<Action> actions;
     private bool isReady;
+    private bool gameEnd;
     private string robotName;
     private Sprite robotImage;
     
@@ -50,7 +51,7 @@ public class Robot : MonoBehaviour
 
     private void Update()
     {
-        if (isReady && actions.Count > 0)
+        if (isReady && actions.Count > 0 && !gameEnd)
             actions.Dequeue().Invoke();
     }
 
@@ -73,6 +74,12 @@ public class Robot : MonoBehaviour
     public void StartGame()
     {
         isReady = true;
+        gameEnd = false;
+    }
+    
+    public void StopGame()
+    {
+        gameEnd = true;
     }
 
     private void _Move()
