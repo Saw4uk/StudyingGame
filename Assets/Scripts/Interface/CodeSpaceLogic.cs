@@ -21,8 +21,9 @@ public class CodeSpaceLogic : MonoBehaviour, ICodeSpace
 
     public void ReadAllBlocks()
     {
+        if (RobotManager.Instance.GameActive) return;
         codeBlockDrawers = codeBlockDrawers.Where(x => x != null).ToList();
-        Robot.Instance.StartGame();
+        RobotManager.Instance.StartGame();
         foreach (var codeBlockDrawer in codeBlockDrawers)
         {
             codeBlockDrawer.ExecuteEvent();
