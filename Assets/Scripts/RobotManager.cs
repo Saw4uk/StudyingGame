@@ -50,10 +50,12 @@ public class RobotManager : MonoBehaviour
     private void Update()
     {
         var allRobotsFinishedWalking = allRobots.All(robot => robot.IsFinishedWalking);
-        
-        if (gameActive && allRobotsFinishedWalking)
+
+        if (gameActive && (allRobotsFinishedWalking || CheckRobotCollision()) )
         {
             gameActive = false;
+            foreach (var robot in allRobots)
+                robot.StopGame();
             StartCoroutine(OnGameEnd());
         }
     }
@@ -114,5 +116,11 @@ public class RobotManager : MonoBehaviour
             selectedRobotBlock = robotBlockToSelect;
             selectedRobotBlock.GetComponent<Button>().interactable = false;
         }
+    }
+
+    private bool CheckRobotCollision()
+    {
+        var robotPositions = allRobots.Select(robot => robot.PositionInGrid);
+        return robotPositions.Count() != robotPositions.Distinct().Count();
     }
 }
