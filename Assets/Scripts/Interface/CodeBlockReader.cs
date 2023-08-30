@@ -29,6 +29,7 @@ public class CodeBlockReader : MonoBehaviour, IDropHandler
         codeSpace.AddBlock(codeBlock);
         transform.SetAsLastSibling();
         codeBlock.Init(generator);
+        if(scrollRect != null)
         scrollRect.GetComponent<ScrollController>().onBlockAdd?.Invoke();
     }
 }
