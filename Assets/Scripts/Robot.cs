@@ -80,15 +80,19 @@ public class Robot : MonoBehaviour
     public void StopGame()
     {
         gameEnd = true;
+        gridMapReference.ClearPosition(positionInGrid);
     }
 
     private void _Move()
     {
         if (gridMapReference.CheckPosition(positionInGrid + direction))
         {
+            gridMapReference.ChangePosition(positionInGrid, positionInGrid + direction);
             positionInGrid += direction;
             StartCoroutine(MoveCoroutineTo(gridMapReference.GetWorldPosition(positionInGrid)));
         }
+        else
+            RobotManager.Instance.WhenRobotCrashes.Invoke();
     }
 
     private void _Rotate(bool isLeft)
@@ -148,6 +152,9 @@ public class Robot : MonoBehaviour
 
         positionInGrid = startCell != null ? startCell.positionInGrid : Vector2Int.zero;
         transform.position = gridMapReference.GetWorldPosition(positionInGrid);
+        gridMapReference.ChangePosition(positionInGrid, positionInGrid);
+        
+        actions.Clear();
     }
     
     private void OnChangingCodeType(CodeType codeType)

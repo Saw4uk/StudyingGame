@@ -18,6 +18,8 @@ public class CodeBlock : MonoBehaviour
     
     private Dictionary<CodeType, string> actionNames;
 
+    public Action<CodeBlock> WhenRemovedFromCycle;
+
     public virtual void Init(CodeBlockGenerator codeBlockGenerator)
     {
         robot = RobotManager.Instance.SelectedRobot;
@@ -37,6 +39,7 @@ public class CodeBlock : MonoBehaviour
     public void DestroyMe()
     {
         CodeDisplayType.Instance.OnChangeCodeType -= OnChangingCodeType;
+        WhenRemovedFromCycle?.Invoke(this);
         Destroy(gameObject);
     }
 

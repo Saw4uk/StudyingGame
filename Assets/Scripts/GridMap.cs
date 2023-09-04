@@ -39,7 +39,7 @@ public class GridMap : MonoBehaviour
         }
     }
 
-    public bool CheckPosition(Vector2Int p) => ObstacleCheck(p);
+    public bool CheckPosition(Vector2Int p) => ObstacleCheck(p) && !map[p.x, p.y].IsBusy;
     private bool BoundaryCheck(Vector2Int p) => p.x >= 0 && p.x < Width && p.y >= 0 && p.y < Height;
     private bool ObstacleCheck(Vector2Int p) => BoundaryCheck(p) && !map[p.x, p.y].IsLocked;
 
@@ -56,4 +56,17 @@ public class GridMap : MonoBehaviour
 
     public Vector2Int CutPosition(Vector2Int p) => 
         new Vector2Int(Mathf.Clamp(p.x, 0, Width-1), Mathf.Clamp(p.y, 0, Height - 1));
+
+    public void ChangePosition(Vector2Int previousPos, Vector2Int newPos)
+    {
+        if (map[newPos.x, newPos.y].IsBusy) return;
+        
+        map[previousPos.x, previousPos.y].ChangeState(false);
+        map[newPos.x, newPos.y].ChangeState(true);
+    }
+    
+    public void ClearPosition(Vector2Int pos)
+    {
+        map[pos.x, pos.y].ChangeState(false);
+    }
 }

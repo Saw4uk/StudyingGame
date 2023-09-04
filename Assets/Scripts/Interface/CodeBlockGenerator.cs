@@ -79,7 +79,7 @@ public class CodeBlockGenerator : MonoBehaviour, IBeginDragHandler, IDragHandler
             case CodeType.Code:
                 actionImage.gameObject.SetActive(false);
                 actionNameText.gameObject.SetActive(true);
-                actionNameText.fontSize = 30;
+                actionNameText.fontSize = 26;
                 actionNameText.text = codeActionName;
                 break;
             case CodeType.Pseudocode:
