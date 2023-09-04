@@ -48,7 +48,7 @@ public class CodeDisplayType : MonoBehaviour
 
     private void Start()
     {
-        ChangeCodeType(codeButton, CodeType.NotACode);
+        ChangeCodeType(notACodeButton, CodeType.NotACode);
     }
 
     private void ChangeCodeType(Button button, CodeType codeType)

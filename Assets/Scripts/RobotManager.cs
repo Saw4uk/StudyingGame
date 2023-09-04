@@ -31,6 +31,8 @@ public class RobotManager : MonoBehaviour
     public Robot SelectedRobot => selectedRobotBlock.GetRobot;
     public bool GameActive => gameActive;
 
+    public Action WhenRobotCrashes;
+
     private void Awake()
     {
         Instance = this;
@@ -45,19 +47,15 @@ public class RobotManager : MonoBehaviour
 
         SelectRobot(allRobotBlocks.FirstOrDefault());
         OnSelectRobot += SelectRobot;
+        WhenRobotCrashes += EndGame;
     }
 
     private void Update()
     {
         var allRobotsFinishedWalking = allRobots.All(robot => robot.IsFinishedWalking);
 
-        if (gameActive && (allRobotsFinishedWalking || CheckRobotCollision()) )
-        {
-            gameActive = false;
-            foreach (var robot in allRobots)
-                robot.StopGame();
-            StartCoroutine(OnGameEnd());
-        }
+        if (gameActive && allRobotsFinishedWalking)
+            EndGame();
     }
 
     public void StartGame()
@@ -91,6 +89,14 @@ public class RobotManager : MonoBehaviour
         gameOverWindow.gameObject.SetActive(false);
         foreach (var robot in allRobots)
             robot.RestoreDefaults();
+    }
+    
+    private void EndGame()
+    {
+        gameActive = false;
+        foreach (var robot in allRobots)
+            robot.StopGame();
+        StartCoroutine(OnGameEnd());
     }
 
 

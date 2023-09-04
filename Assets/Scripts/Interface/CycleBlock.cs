@@ -31,5 +31,13 @@ public class CycleBlock : IntCodeBlock, ICodeSpace
    {
       codeBlockDrawers.Add(block);
       rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y + 40);
+      block.WhenRemovedFromCycle += DeleteBlock;
+   }
+
+   public void DeleteBlock(CodeBlock block)
+   {
+      codeBlockDrawers.Remove(block);
+      rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y - 40);
+      block.WhenRemovedFromCycle -= DeleteBlock;
    }
 }

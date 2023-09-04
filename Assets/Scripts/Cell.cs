@@ -11,7 +11,9 @@ public class Cell : MonoBehaviour
 
     public bool IsLocked => cellType == CellType.Obstacle;
     public bool IsWin => cellType == CellType.Finish;
+    public bool IsBusy { get; private set; }
 
+    public void ChangeState(bool state) => IsBusy = state;
 
     private void OnValidate()
     {
@@ -23,6 +25,11 @@ public class Cell : MonoBehaviour
     {
         if (image == null)
             image = GetComponent<Image>();
+    }
+
+    private void Awake()
+    {
+        IsBusy = false;
     }
 }
 
